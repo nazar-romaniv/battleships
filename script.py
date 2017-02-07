@@ -1,7 +1,7 @@
 from copy import deepcopy
 from random import randint
 
-tile_convert = lambda tile: (ord(tile[0]) - ord('a'), tile[1] - 1)
+tile_convert = lambda tile: (tile[1] - 1, ord(tile[0]) - ord('a'))
 
 
 def read_field(filename: str) -> list:
