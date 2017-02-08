@@ -135,9 +135,7 @@ def generate_field():
     for i in range(10):
         field += [[' '] * 10]
     for length in range(4, 0, -1):
-        print(length)
         for count in range(5 - length):
-            print(count)
             while True:
                 i = randint(0, 9)
                 j = randint(0, 9)
@@ -158,9 +156,7 @@ def generate_field():
                     if field[tile[0]][tile[1]] == '*':
                         break
                 else:
-                    print(ship)
                     break
             for tile in ship[1]:
-                print(tile)
                 field[tile[0]][tile[1]] = '*'
     return field
