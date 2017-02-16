@@ -1,14 +1,3 @@
-def clear(message):
-
-    import os
-
-    input()
-    os.system('export TERM=xterm-256color')
-    os.system('clear')
-    print(message)
-    return None
-
-
 class Player():
 
     def __init__(self, name):
@@ -128,11 +117,33 @@ class Field():
 class Game():
 
     def __init__(self):
-        self.__field = [Field(), Field()]
         name1 = input('Enter the name of the first player: ')
         name2 = input('Enter the name of the second player: ')
+        input('Press Enter to continue')
+        Game.__clear('')
+        self.__field = [Field(), Field()]
         self.__players = [Player(name1), Player(name2)]
         self.__destroyed = [0, 0]
+
+    @staticmethod
+    def __clear(message):
+
+        import os
+        import subprocess
+        import platform
+
+        input()
+        if platform.system() == 'Windows':
+            os.system('cls')
+        elif platform.system() == 'Linux':
+            if subprocess.getoutput('echo $TERM') != '':
+                os.system('clear')
+            else:
+                print('\n' * 100)
+        else:
+            if subprocess.getoutput('echo $TERM') != '':
+                os.system('clear')
+        print(message)
 
     def field_with_ships(self, player):
         return self.__field[player].field_with_ships()
@@ -158,7 +169,7 @@ class Game():
             else:
                 print('Sorry! Good luck next time! :(\n')
                 current_player = 1 - current_player
-                clear('{}\'s turn'.format(self.__players[current_player].name))
+                Game.__clear('{}\'s turn'.format(self.__players[current_player].name))
                 input('Press Enter when ready')
         print('{} WINS!!!'.format(self.__players[current_player].name))
 
@@ -168,8 +179,6 @@ class Ship():
 
     def __init__(self, length):
         self.__length = length
-        self.horizontal = True
-        self.bow = (0, 0)
         self.__hit = [False] * length
 
     def __len__(self):
