@@ -87,10 +87,9 @@ class Field():
             return False
 
     def field_without_ships(self):
-        #field = '  1 2 3 4 5 6 7 8 9 10'
-        field = ''
+        field = '  A B C D E F G H I J'
         for i in range(10):
-         #   field += '\n' + chr(i + ord('A')) + ' '
+            field += '\n' + str(i + 1) + ' ' if i != 10 else '\n' + str(i + 1)
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -98,14 +97,13 @@ class Field():
                     field += '0'
                 else:
                     field += ' '
-            field += '\n'
+                field += ' '
         return field
 
     def field_with_ships(self):
-        #field = '  1 2 3 4 5 6 7 8 9 10'
-        field = ''
+        field = '  A B C D E F G H I J'
         for i in range(10):
-         #   field += '\n' + chr(i + ord('A')) + ' '
+            field += '\n' + str(i + 1) + ' ' if i != 10 else '\n' + str(i + 1)
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -115,7 +113,7 @@ class Field():
                     field += '0'
                 else:
                     field += ' '
-            field += '\n'
+                field += ' '
         return field
 
 
