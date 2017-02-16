@@ -124,7 +124,6 @@ class Game():
         name1 = input('Enter the name of the first player: ')
         name2 = input('Enter the name of the second player: ')
         self.__players = [Player(name1), Player(name2)]
-        self.__current_player = 0
         self.__destroyed = [0, 0]
 
     def field_with_ships(self, player):
@@ -137,19 +136,20 @@ class Game():
         return self.__players[player].read_position()
 
     def play(self):
-        while self.__destroyed[1 - self.__current_player] != 10:
-            print(self.field_with_ships(self.__current_player),
-                  self.field_without_ships(1 - self.__current_player), sep='\n\n')
-            hit = self.__field[self.__current_player].shoot_at(self.read_position(self.__current_player))
-            if hit:
-                print('BOOM! Nice shot!')
-            elif hit == 'destroyed':
+        current_player = 0
+        while self.__destroyed[1 - current_player] != 10:
+            print(self.field_with_ships(current_player),
+                  self.field_without_ships(1 - current_player), sep='\n\n')
+            hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
+            if hit == 'destroyed':
                 print('Wheee! Enemy ship destroyed!')
-                self.__destroyed[1 - self.__current_player] += 1
+                self.__destroyed[1 - current_player] += 1
+            elif hit:
+                print('BOOM! Nice shot!')
             else:
                 print('Sorry! Good luck next time! :(')
-                self.__current_player = 1 - self.__current_player
-        self.__players[self.__current_player].win()
+                current_player = 1 - current_player
+        self.__players[current_player].win()
 
 
 
@@ -176,8 +176,8 @@ class Ship():
                 if tile == (start[0] + i, start[1]):
                     self.__hit[i] = True
                     break
-        for tile in self.__hit:
-            if tile == True:
+        for shot in self.__hit:
+            if shot == False:
                 break
         else:
             return True
