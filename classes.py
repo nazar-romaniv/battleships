@@ -74,8 +74,10 @@ class Field():
 
     def shoot_at(self, tile):
         if len(self.__ships[tile[0]][tile[1]]) > 0:
-            self.__ships[tile[0]][tile[1]].shoot_at(tile)
+            hit = self.__ships[tile[0]][tile[1]].shoot_at(tile)
             self.__hit.add((tile, True))
+            if hit:
+                return 'destroyed'
             return True
         else:
             self.__hit.add((tile, False))
@@ -120,6 +122,7 @@ class Game():
         name2 = input('Enter the name of the second player: ')
         self.__players = [Player(name1), Player(name2)]
         self.__current_player = 0
+        self.__destroyed = [0, 0]
 
     def field_with_ships(self, player):
         self.__field[player].field_with_ships()
@@ -127,8 +130,15 @@ class Game():
     def field_without_ships(self, player):
         self.__field[player].field_without_ships()
 
-    def read_position(self):
-        self.__players[self.__current_player].read_position()
+    def read_position(self, player):
+        self.__players[player].read_position()
+
+    def play(self):
+        while self.__destroyed[1 - self.__current_player]:
+            print(self.field_with_ships(self.__current_player),
+                  self.field_without_ships(1 - self.__current_player),
+                  self.read_position(self.__current_player), sep='\n\n')
+
 
 
 class Ship():
@@ -154,3 +164,8 @@ class Ship():
                 if tile == (start[0] + i, start[1]):
                     self.__hit[i] = True
                     break
+        for tile in self.__hit:
+            if tile == True:
+                break
+        else:
+            return True
