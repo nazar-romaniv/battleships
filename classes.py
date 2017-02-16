@@ -6,10 +6,10 @@ class Player():
     def read_position(self):
         position = input('{}, where to shoot? '.format(self.__name))
         while not (position[0].isalpha() and position[1].isnumeric()
-                   and 'A' <= position[0].upper() <= 'J' and 1 <= int(position[1]) <= 10):
+                   and 'A' <= position[0].upper() <= 'J' and 1 <= int(position[1:]) <= 10):
             position = input('Enter valid coordinates (e.g. \'D3\') ')
         position = position.upper()
-        position = (int(position[1]) - 1, ord(position[0]) - ord('A'))
+        position = (int(position[1:]) - 1, ord(position[0]) - ord('A'))
         return position
 
     def win(self):
@@ -89,7 +89,7 @@ class Field():
     def field_without_ships(self):
         field = '  A B C D E F G H I J'
         for i in range(10):
-            field += '\n' + str(i + 1) + ' ' if i != 10 else '\n' + str(i + 1)
+            field += '\n' + str(i + 1) + ' ' if i != 9 else '\n' + str(i + 1)
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -103,7 +103,7 @@ class Field():
     def field_with_ships(self):
         field = '  A B C D E F G H I J'
         for i in range(10):
-            field += '\n' + str(i + 1) + ' ' if i != 10 else '\n' + str(i + 1)
+            field += '\n' + str(i + 1) + ' ' if i != 9 else '\n' + str(i + 1)
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
