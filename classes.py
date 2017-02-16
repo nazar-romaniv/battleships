@@ -12,6 +12,9 @@ class Player():
         position = (int(position[1]), ord(position[0]) - ord('A'))
         return position
 
+    def win(self):
+        print('{} WINS!!!'.format(self.__name))
+
 
 class Field():
 
@@ -131,13 +134,22 @@ class Game():
         self.__field[player].field_without_ships()
 
     def read_position(self, player):
-        self.__players[player].read_position()
+        return self.__players[player].read_position()
 
     def play(self):
         while self.__destroyed[1 - self.__current_player]:
             print(self.field_with_ships(self.__current_player),
-                  self.field_without_ships(1 - self.__current_player),
-                  self.read_position(self.__current_player), sep='\n\n')
+                  self.field_without_ships(1 - self.__current_player), sep='\n\n')
+            hit = self.__field[self.__current_player].shoot_at(self.read_position(self.__current_player))
+            if hit:
+                print('BOOM! Nice shot!')
+            elif hit == 'destroyed':
+                print('Wheee! Enemy ship destroyed!')
+                self.__destroyed[1 - self.__current_player] += 1
+            else:
+                print('Sorry! Good luck next time! :(')
+                self.__current_player = 1 - self.__current_player
+        self.__players[self.__current_player].win()
 
 
 
