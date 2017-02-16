@@ -87,8 +87,9 @@ class Field():
             return False
 
     def field_without_ships(self):
-        field = '1 2 3 4 5 6 7 8 9 10'
+        field = '  1 2 3 4 5 6 7 8 9 10'
         for i in range(10):
+            field += '\n' + chr(i + ord('A')) + ' '
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -97,12 +98,12 @@ class Field():
                 else:
                     field += ' '
                 field += ' '
-            field += '\n' + chr(i + ord('A'))
         return field
 
     def field_with_ships(self):
-        field = '1 2 3 4 5 6 7 8 9 10'
+        field = '  1 2 3 4 5 6 7 8 9 10'
         for i in range(10):
+            field += '\n' + chr(i + ord('A')) + ' '
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -113,7 +114,6 @@ class Field():
                 else:
                     field += ' '
                 field += ' '
-            field += '\n' + chr(i + ord('A'))
         return field
 
 
@@ -128,16 +128,16 @@ class Game():
         self.__destroyed = [0, 0]
 
     def field_with_ships(self, player):
-        self.__field[player].field_with_ships()
+        return self.__field[player].field_with_ships()
 
     def field_without_ships(self, player):
-        self.__field[player].field_without_ships()
+        return self.__field[player].field_without_ships()
 
     def read_position(self, player):
         return self.__players[player].read_position()
 
     def play(self):
-        while self.__destroyed[1 - self.__current_player]:
+        while self.__destroyed[1 - self.__current_player] != 10:
             print(self.field_with_ships(self.__current_player),
                   self.field_without_ships(1 - self.__current_player), sep='\n\n')
             hit = self.__field[self.__current_player].shoot_at(self.read_position(self.__current_player))
