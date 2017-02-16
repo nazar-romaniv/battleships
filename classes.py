@@ -1,19 +1,27 @@
+def clear(message):
+
+    import os
+
+    input()
+    os.system('export TERM=xterm-256color')
+    os.system('clear')
+    print(message)
+    return None
+
+
 class Player():
 
     def __init__(self, name):
-        self.__name = name
+        self.name = name
 
     def read_position(self):
-        position = input('{}, where to shoot? '.format(self.__name))
+        position = input('{}, where to shoot? '.format(self.name))
         while not (position[0].isalpha() and position[1].isnumeric()
                    and 'A' <= position[0].upper() <= 'J' and 1 <= int(position[1:]) <= 10):
             position = input('Enter valid coordinates (e.g. \'D3\') ')
         position = position.upper()
         position = (int(position[1:]) - 1, ord(position[0]) - ord('A'))
         return position
-
-    def win(self):
-        print('{} WINS!!!'.format(self.__name))
 
 
 class Field():
@@ -141,15 +149,18 @@ class Game():
             print(self.field_with_ships(current_player),
                   self.field_without_ships(1 - current_player), sep='\n\n')
             hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
+
             if hit == 'destroyed':
                 print('Wheee! Enemy ship destroyed!')
                 self.__destroyed[1 - current_player] += 1
             elif hit:
                 print('BOOM! Nice shot!')
             else:
-                print('Sorry! Good luck next time! :(')
+                print('Sorry! Good luck next time! :(\n')
                 current_player = 1 - current_player
-        self.__players[current_player].win()
+                clear('{}\'s turn'.format(self.__players[current_player].name))
+                input('Press Enter when ready')
+        print('{} WINS!!!'.format(self.__players[current_player].name))
 
 
 
