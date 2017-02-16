@@ -9,7 +9,7 @@ class Player():
                    and 'A' <= position[0].upper() <= 'J' and 1 <= int(position[1]) <= 10):
             position = input('Enter valid coordinates (e.g. \'D3\') ')
         position = position.upper()
-        position = (int(position[1]), ord(position[0]) - ord('A'))
+        position = (int(position[1]) - 1, ord(position[0]) - ord('A'))
         return position
 
     def win(self):
@@ -87,9 +87,10 @@ class Field():
             return False
 
     def field_without_ships(self):
-        field = '  1 2 3 4 5 6 7 8 9 10'
+        #field = '  1 2 3 4 5 6 7 8 9 10'
+        field = ''
         for i in range(10):
-            field += '\n' + chr(i + ord('A')) + ' '
+         #   field += '\n' + chr(i + ord('A')) + ' '
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -97,13 +98,14 @@ class Field():
                     field += '0'
                 else:
                     field += ' '
-                field += ' '
+            field += '\n'
         return field
 
     def field_with_ships(self):
-        field = '  1 2 3 4 5 6 7 8 9 10'
+        #field = '  1 2 3 4 5 6 7 8 9 10'
+        field = ''
         for i in range(10):
-            field += '\n' + chr(i + ord('A')) + ' '
+         #   field += '\n' + chr(i + ord('A')) + ' '
             for j in range(10):
                 if ((i, j), True) in self.__hit:
                     field += 'X'
@@ -113,7 +115,7 @@ class Field():
                     field += '0'
                 else:
                     field += ' '
-                field += ' '
+            field += '\n'
         return field
 
 
