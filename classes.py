@@ -136,7 +136,7 @@ class Game():
         if platform.system() == 'Windows':
             os.system('cls')
         elif platform.system() == 'Linux':
-            if subprocess.getoutput('echo $TERM') != '':
+            if subprocess.getoutput('clear') == 0:
                 os.system('clear')
             else:
                 print('\n' * 100)
