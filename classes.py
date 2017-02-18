@@ -75,14 +75,13 @@ class Field():
     def shoot_at(self, tile):
         if tile in self.__hit:
             raise HitException('No way')
-        if len(self.__ships[tile[0]][tile[1]]) > 0:
-            hit = self.__ships[tile[0]][tile[1]].shoot_at(tile)
-            self.__hit.add(tile)
-            if hit:
-                return 1
+        hit = self.__ships[tile[0]][tile[1]].shoot_at(tile)
+        self.__hit.add(tile)
+        if hit == 0:
             return 0
-        else:
-            self.__hit.add(tile)
+        elif hit == 1:
+            return 1
+        elif hit == 2:
             return 2
 
     def field_without_ships(self):
@@ -164,7 +163,7 @@ class Game():
                       self.field_without_ships(1 - current_player), sep='\n\n')
                 hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
             except KeyboardInterrupt:
-                q = input('Wanna quit? Enter Y ')
+                q = input('Wanna quit? Y/N ')
                 if q == 'Y':
                     quit()
                 else:
@@ -191,7 +190,7 @@ class Ship():
     def __init__(self, length):
         self.__length = length
         self.__hit = [False] * length
-        self.bow = (0, 0)
+        self.bow = (-1, -1)
         self.horizontal = False
 
     def __len__(self):
@@ -199,6 +198,8 @@ class Ship():
 
     def shoot_at(self, tile):
         start = self.bow
+        if start == (-1, -1):
+            return 2
         if self.horizontal:
             for i in range(self.__length):
                 if tile == (start[0], start[1] + i):
@@ -210,6 +211,6 @@ class Ship():
                     self.__hit[i] = True
                     break
         if self.__hit == [True] * self.__length:
-            return True
+            return 1
         else:
-            return False
+            return 0
