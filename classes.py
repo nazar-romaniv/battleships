@@ -1,3 +1,7 @@
+class HitException(Exception):
+    pass
+
+
 class Player():
 
     def __init__(self, name):
@@ -31,16 +35,9 @@ class Field():
             for tile in ship:
                 for i in range(-1, 2):
                     for j in range(-1, 2):
-                        if tile[0] + i < 0 or tile[1] + j < 0 \
-                                or tile[0] + i > 9 or tile[1] + j > 9:
-                            continue
                         yield (tile[0] + i, tile[1] + j)
 
-        field = []
-        for i in range(10):
-            field += [[]]
-            for j in range(10):
-                field[i] += [Ship(0)]
+        field = [[Ship(0)] * 10 for i in range(10)]
         for length in range(4, 0, -1):
             for count in range(5 - length):
                 while True:
@@ -61,8 +58,11 @@ class Field():
                         if tiles[-1][1] > 9:
                             continue
                     for tile in adj_tiles(tiles):
-                        if len(field[tile[0]][tile[1]]) > 0:
-                            break
+                        try:
+                            if len(field[tile[0]][tile[1]]) > 0:
+                                break
+                        except IndexError:
+                            continue
                     else:
                         break
                 sh = Ship(length)
@@ -73,24 +73,26 @@ class Field():
         return field
 
     def shoot_at(self, tile):
+        if tile in self.__hit:
+            raise HitException('No way')
         if len(self.__ships[tile[0]][tile[1]]) > 0:
             hit = self.__ships[tile[0]][tile[1]].shoot_at(tile)
-            self.__hit.add((tile, True))
+            self.__hit.add(tile)
             if hit:
-                return 'destroyed'
-            return True
+                return 1
+            return 0
         else:
-            self.__hit.add((tile, False))
-            return False
+            self.__hit.add(tile)
+            return 2
 
     def field_without_ships(self):
         field = '  A B C D E F G H I J'
         for i in range(10):
             field += '\n' + str(i + 1) + ' ' if i != 9 else '\n' + str(i + 1)
             for j in range(10):
-                if ((i, j), True) in self.__hit:
+                if (i, j) in self.__hit and len(self.__ships[i][j]) > 0:
                     field += 'X'
-                elif ((i, j), False) in self.__hit:
+                elif (i, j) in self.__hit:
                     field += '0'
                 else:
                     field += ' '
@@ -102,11 +104,11 @@ class Field():
         for i in range(10):
             field += '\n' + str(i + 1) + ' ' if i != 9 else '\n' + str(i + 1)
             for j in range(10):
-                if ((i, j), True) in self.__hit:
+                if (i, j) in self.__hit and len(self.__ships[i][j]) > 0:
                     field += 'X'
                 elif len(self.__ships[i][j]) > 0:
                     field += '*'
-                elif ((i, j), False) in self.__hit:
+                elif (i, j) in self.__hit:
                     field += '0'
                 else:
                     field += ' '
@@ -119,7 +121,7 @@ class Game():
     def __init__(self):
         name1 = input('Enter the name of the first player: ')
         name2 = input('Enter the name of the second player: ')
-        input('Press Enter to continue')
+        print('Press Enter to continue')
         Game.__clear('')
         self.__field = [Field(), Field()]
         self.__players = [Player(name1), Player(name2)]
@@ -157,14 +159,23 @@ class Game():
     def play(self):
         current_player = 0
         while self.__destroyed[1 - current_player] != 10:
-            print(self.field_with_ships(current_player),
-                  self.field_without_ships(1 - current_player), sep='\n\n')
-            hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
-
-            if hit == 'destroyed':
+            try:
+                print(self.field_with_ships(current_player),
+                      self.field_without_ships(1 - current_player), sep='\n\n')
+                hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
+            except KeyboardInterrupt:
+                q = input('Wanna quit? Enter Y ')
+                if q == 'Y':
+                    quit()
+                else:
+                    continue
+            except HitException:
+                print('You\'ve shot at this tile already.')
+                continue
+            if hit == 1:
                 print('Wheee! Enemy ship destroyed!')
                 self.__destroyed[1 - current_player] += 1
-            elif hit:
+            elif hit == 0:
                 print('BOOM! Nice shot!')
             else:
                 print('Sorry! Good luck next time! :(\n')
@@ -180,6 +191,8 @@ class Ship():
     def __init__(self, length):
         self.__length = length
         self.__hit = [False] * length
+        self.bow = (0, 0)
+        self.horizontal = False
 
     def __len__(self):
         return self.__length
@@ -196,8 +209,7 @@ class Ship():
                 if tile == (start[0] + i, start[1]):
                     self.__hit[i] = True
                     break
-        for shot in self.__hit:
-            if shot == False:
-                break
-        else:
+        if self.__hit == [True] * self.__length:
             return True
+        else:
+            return False
