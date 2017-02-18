@@ -162,6 +162,16 @@ class Game():
                 print(self.field_with_ships(current_player),
                       self.field_without_ships(1 - current_player), sep='\n\n')
                 hit = self.__field[1 - current_player].shoot_at(self.read_position(current_player))
+                if hit == 1:
+                    print('Wheee! Enemy ship destroyed!')
+                    self.__destroyed[1 - current_player] += 1
+                elif hit == 0:
+                    print('BOOM! Nice shot!')
+                else:
+                    print('Sorry! Good luck next time! :(\n')
+                    current_player = 1 - current_player
+                    Game.__clear('{}\'s turn'.format(self.__players[current_player].name))
+                    input('Press Enter when ready')
             except KeyboardInterrupt:
                 q = input('Wanna quit? Y/N ')
                 if q == 'Y':
@@ -171,16 +181,6 @@ class Game():
             except HitException:
                 print('You\'ve shot at this tile already.')
                 continue
-            if hit == 1:
-                print('Wheee! Enemy ship destroyed!')
-                self.__destroyed[1 - current_player] += 1
-            elif hit == 0:
-                print('BOOM! Nice shot!')
-            else:
-                print('Sorry! Good luck next time! :(\n')
-                current_player = 1 - current_player
-                Game.__clear('{}\'s turn'.format(self.__players[current_player].name))
-                input('Press Enter when ready')
         print('{} WINS!!!'.format(self.__players[current_player].name))
 
 
