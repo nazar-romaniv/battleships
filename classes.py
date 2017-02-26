@@ -77,12 +77,7 @@ class Field():
             raise HitException('No way')
         hit = self.__ships[tile[0]][tile[1]].shoot_at(tile)
         self.__hit.add(tile)
-        if hit == 0:
-            return 0
-        elif hit == 1:
-            return 1
-        elif hit == 2:
-            return 2
+        return hit
 
     def field_without_ships(self):
         field = '  A B C D E F G H I J'
